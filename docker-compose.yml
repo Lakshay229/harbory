@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./harbory-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      
+  frontend:
+    build: ./harbory-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend

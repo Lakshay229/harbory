@@ -1,0 +1,19 @@
+# Go build artifacts
+/tmp/
+
+# Git files
+.git/
+.gitignore
+
+# Local environment files
+.env
+.env.local
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Test files
+*_test.go

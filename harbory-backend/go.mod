@@ -1,6 +1,6 @@
 module harbory-backend
 
-go 1.23.5
+go 1.23
 
 require (
 	github.com/Microsoft/go-winio v0.4.14 // indirect

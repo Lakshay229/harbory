@@ -1,7 +1,8 @@
 {
   "name": "harbory-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "A modern web interface for managing Docker containers, images, and system information",
   "type": "module",
   "scripts": {
     "dev": "vite",
