@@ -5,7 +5,7 @@ Harbory is a cross-platform Docker management tool built with Go and React. It p
 ## Features
 
 - 📦 **Container Management**: View, start, stop, and remove containers
-- 🖼️ **Image Management**: Browse, pull, and delete Docker images
+- 🖼️ **Image Management**: Browse, pull, delete, and inspect Docker images
 - 📊 **System Information**: Monitor Docker system resources and performance
 - 🔒 **Secure API**: Communication between frontend and backend using RESTful API
 - 🌐 **Web Interface**: Modern and responsive UI built with React
@@ -66,11 +66,47 @@ The development server will be available at [http://localhost:3000](http://local
 
 ## API Endpoints
 
+### Container Endpoints
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET    | `/api/containers` | List all containers |
+| POST   | `/api/containers/{id}/start` | Start a container |
+| POST   | `/api/containers/{id}/stop` | Stop a container |
+| DELETE | `/api/containers/{id}/delete` | Delete a container |
+
+### Image Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | GET    | `/api/images` | List all images |
-| GET    | `/api/system/info` | Get system information |
+| POST   | `/api/images/pull` | Pull an image from registry |
+| DELETE | `/api/images/{id}/delete` | Delete an image |
+| GET    | `/api/images/{id}/inspect` | Get detailed image information |
+
+### System Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET    | `/api/system/info` | Get Docker system information |
+
+### Image Pull Usage
+
+To pull a Docker image using the API:
+
+```bash
+curl -X POST http://localhost:8080/api/images/pull \
+  -H "Content-Type: application/json" \
+  -d '{"image": "nginx", "tag": "alpine"}'
+```
+
+Request body format:
+```json
+{
+  "image": "ubuntu",  # Required: image name
+  "tag": "latest"     # Optional: defaults to "latest" if omitted
+}
+```
 
 ## Technologies Used
 
@@ -97,6 +133,9 @@ harbory/
 │   ├── Dockerfile            # Backend Docker configuration
 │   ├── main.go               # Entry point
 │   ├── handlers/             # API route handlers
+│   │   ├── containers.go     # Container management handlers
+│   │   ├── images.go         # Image management handlers
+│   │   └── system.go         # System information handlers
 │   ├── router/               # API route definitions
 │   └── utils/                # Utility functions
 ├── harbory-frontend/         # React frontend application
