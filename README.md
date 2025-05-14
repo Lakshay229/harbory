@@ -66,11 +66,25 @@ The development server will be available at [http://localhost:3000](http://local
 
 ## API Endpoints
 
+### REST Endpoints
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET    | `/api/containers` | List all containers |
-| GET    | `/api/images` | List all images |
-| GET    | `/api/system/info` | Get system information |
+| GET    | `/api/containers` | List all containers (running and stopped) |
+| POST   | `/api/containers/{id}/start` | Start a container |
+| POST   | `/api/containers/{id}/stop` | Stop a container |
+| DELETE | `/api/containers/{id}/delete` | Delete a container (with force option) |
+| GET    | `/api/images` | List all Docker images |
+| GET    | `/api/images/{id}/inspect` | Get detailed information about an image including layers |
+| DELETE | `/api/images/{id}/delete` | Remove an image (with force and prune options) |
+| GET    | `/api/system/info` | Get Docker system information |
+
+### WebSocket Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `/api/containers/{id}/logs` | Stream real-time container logs (stdout and stderr) |
+| `/ws/images/{id}/pull` | Stream real-time image pull progress with detailed layer information |
 
 ## Technologies Used
 
@@ -88,6 +102,24 @@ The development server will be available at [http://localhost:3000](http://local
   - [Docker](https://www.docker.com/)
   - [Docker Compose](https://docs.docker.com/compose/)
 
+## Demo Files
+
+The repository includes standalone HTML files that demonstrate WebSocket functionality:
+
+1. **index.html**: A simple viewer for streaming container logs in real-time via WebSockets
+   - Connects to `/api/containers/{id}/logs` endpoint
+   - Displays logs with a terminal-like interface
+   - Features a monospace font and terminal-like styling for better log readability
+   - Automatically scrolls to show the latest logs
+
+2. **pullimage.html**: A utility for pulling Docker images with real-time progress updates
+   - Connects to `/ws/images/{id}/pull` endpoint
+   - Shows detailed pulling progress with layer information
+   - Includes a simple form to input any Docker image name to pull
+   - Provides real-time feedback on the pull operation status
+
+These HTML files serve as examples of how to integrate WebSocket connections with the Harbory API and can be used as reference implementations for custom integrations.
+
 ## Project Structure
 
 ```
@@ -97,6 +129,10 @@ harbory/
 │   ├── Dockerfile            # Backend Docker configuration
 │   ├── main.go               # Entry point
 │   ├── handlers/             # API route handlers
+│   │   ├── containers.go     # Container management handlers
+│   │   ├── images.go         # Image management handlers
+│   │   ├── logs.go           # WebSocket log streaming handler
+│   │   └── system.go         # System information handler
 │   ├── router/               # API route definitions
 │   └── utils/                # Utility functions
 ├── harbory-frontend/         # React frontend application
