@@ -17,6 +17,7 @@ func SetupRouter() *mux.Router {
 	r.HandleFunc("/api/containers", handlers.GetContainers).Methods("GET")
 	r.HandleFunc("/api/images", handlers.GetImages).Methods("GET")
 	r.HandleFunc("/api/system/info", handlers.GetSystemInfo).Methods("GET")
+	r.HandleFunc("/api/containers/{id}/logs", handlers.GetLogs)
 
 	r.HandleFunc("/api/containers/{id}/start", handlers.StartContainer).Methods("POST")
 	r.HandleFunc("/api/containers/{id}/stop", handlers.StopContainer).Methods("POST")
