@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pull Docker Image</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+    }
+    #logs {
+      white-space: pre-wrap;
+      background-color: #2e2e2e;
+      padding: 10px;
+      border-radius: 6px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    input, button {
+      padding: 8px;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Pull Docker Image</h2>
+
+  <input type="text" id="id" placeholder="e.g. nginx" />
+  <button onclick="pullImage()">Pull Image</button>
+
+  <h3>Pull Logs:</h3>
+  <div id="logs"></div>
+
+  <script>
+    function pullImage() {
+      const id = document.getElementById("id").value.trim();
+      if (!id) {
+        alert("Please enter an image name.");
+        return;
+      }
+
+      const ws = new WebSocket(`ws://localhost:8080/ws/images/${id}/pull`);
+      const logDiv = document.getElementById("logs");
+      logDiv.innerHTML = "Connecting...\n";
+
+      ws.onmessage = (event) => {
+        logDiv.innerText += event.data;
+        logDiv.scrollTop = logDiv.scrollHeight;
+      };
+
+      ws.onerror = (err) => {
+        logDiv.innerText += "\nError connecting to WebSocket.";
+      };
+
+      ws.onclose = () => {
+        logDiv.innerText += "\nConnection closed.";
+      };
+    }
+  </script>
+
+</body>
+</html>

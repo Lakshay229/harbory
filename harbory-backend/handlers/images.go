@@ -1,17 +1,18 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
-	"io"
+	"github.com/gorilla/mux"
+	"log"
 	"net/http"
-
-	"harbory-backend/utils"
+	"io"
+	"context" 
 
 	"github.com/docker/docker/api/types/image"
-	imagetypes "github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/client"
-	"github.com/gorilla/mux"
+	"github.com/docker/docker/api/types"
+	"github.com/gorilla/websocket"
+	"harbory-backend/utils"
 )
 
 func GetImages(w http.ResponseWriter, r *http.Request) {
@@ -23,6 +24,56 @@ func GetImages(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(images)
 }
+
+// Get layers of an image
+func InspectImage(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	imageId := vars["id"]
+	cli := utils.GetDockerClient()
+
+	inspects, err := cli.ImageInspect(r.Context(), imageId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	json.NewEncoder(w).Encode(inspects)
+}
+
+func PullImageResp(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	imageName := vars["id"]
+	cli := utils.GetDockerClient()
+
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Printf("WebSocket upgrade failed: %v", err)
+		return
+	}
+	defer conn.Close()
+
+	options := image.PullOptions{
+		All:      false, // Pull all images
+		Platform: "",    // Specify the platform to pull
+    Tag: "latest",
+	}
+
+	pullResp, err := cli.ImagePull(r.Context(), imageName, options)
+	if err != nil {
+		conn.WriteMessage(websocket.TextMessage, []byte("Failed to get logs: "+err.Error()))
+		return
+	}
+	defer pullResp.Close()
+
+	dec := json.NewDecoder(pullResp)
+	for {
+		var msg map[string]interface{}
+		if err := dec.Decode(&msg); err != nil {
+			break
+		}
+
+		data, _ := json.Marshal(msg)
+		conn.WriteMessage(websocket.TextMessage, data)
+	}
 
 func PullImage(w http.ResponseWriter, r *http.Request) {
 	var request struct {
@@ -90,25 +141,4 @@ func DeleteImage(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Image deleted successfully"))
-}
-
-func InspectImage(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	imageID := vars["id"]
-
-	cli, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		http.Error(w, "Failed to create Docker client: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer cli.Close()
-
-	ctx := context.Background()
-	inspect, _, err := cli.ImageInspectWithRaw(ctx, imageID)
-	if err != nil {
-		http.Error(w, "Failed to inspect image: "+err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	json.NewEncoder(w).Encode(inspect)
 }
