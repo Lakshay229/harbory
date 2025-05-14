@@ -5,7 +5,7 @@ Harbory is a cross-platform Docker management tool built with Go and React. It p
 ## Features
 
 - 📦 **Container Management**: View, start, stop, and remove containers
-- 🖼️ **Image Management**: Browse, pull, and delete Docker images
+- 🖼️ **Image Management**: Browse, pull, delete, and inspect Docker images
 - 📊 **System Information**: Monitor Docker system resources and performance
 - 🔒 **Secure API**: Communication between frontend and backend using RESTful API
 - 🌐 **Web Interface**: Modern and responsive UI built with React
@@ -86,6 +86,25 @@ The development server will be available at [http://localhost:3000](http://local
 | `/api/containers/{id}/logs` | Stream real-time container logs (stdout and stderr) |
 | `/ws/images/{id}/pull` | Stream real-time image pull progress with detailed layer information |
 
+
+### Image Pull Usage
+
+To pull a Docker image using the API:
+
+```bash
+curl -X POST http://localhost:8080/api/images/pull \
+  -H "Content-Type: application/json" \
+  -d '{"image": "nginx", "tag": "alpine"}'
+```
+
+Request body format:
+```json
+{
+  "image": "ubuntu",  # Required: image name
+  "tag": "latest"     # Optional: defaults to "latest" if omitted
+}
+```
+
 ## Technologies Used
 
 - **Backend**:
@@ -131,8 +150,8 @@ harbory/
 │   ├── handlers/             # API route handlers
 │   │   ├── containers.go     # Container management handlers
 │   │   ├── images.go         # Image management handlers
-│   │   ├── logs.go           # WebSocket log streaming handler
-│   │   └── system.go         # System information handler
+│   │   ├── logs.go           # WebSocket log streaming handlers
+│   │   └── system.go         # System information handlers
 │   ├── router/               # API route definitions
 │   └── utils/                # Utility functions
 ├── harbory-frontend/         # React frontend application
