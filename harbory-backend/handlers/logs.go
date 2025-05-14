@@ -16,10 +16,10 @@ var upgrader = websocket.Upgrader{
 	},	
 }
 
-func GetLogs(w http.ResponseWriter, r *http.Request) {
+func GetContainerLogs(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	containerID := vars["id"]
-
+	
 	cli := utils.GetDockerClient()
 
 	conn, err := upgrader.Upgrade(w, r, nil)
