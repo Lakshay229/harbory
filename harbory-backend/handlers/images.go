@@ -10,7 +10,7 @@ import (
 
 	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/client"
-	"github.com/docker/docker/api/types"
+
 	"github.com/gorilla/websocket"
 	"harbory-backend/utils"
 )
@@ -54,7 +54,6 @@ func PullImageResp(w http.ResponseWriter, r *http.Request) {
 	options := image.PullOptions{
 		All:      false, // Pull all images
 		Platform: "",    // Specify the platform to pull
-    Tag: "latest",
 	}
 
 	pullResp, err := cli.ImagePull(r.Context(), imageName, options)
@@ -74,6 +73,7 @@ func PullImageResp(w http.ResponseWriter, r *http.Request) {
 		data, _ := json.Marshal(msg)
 		conn.WriteMessage(websocket.TextMessage, data)
 	}
+}
 
 func PullImage(w http.ResponseWriter, r *http.Request) {
 	var request struct {
@@ -129,7 +129,7 @@ func DeleteImage(w http.ResponseWriter, r *http.Request) {
 	defer cli.Close()
 
 	ctx := context.Background()
-	_, err = cli.ImageRemove(ctx, imageID, imagetypes.RemoveOptions{
+	_, err = cli.ImageRemove(ctx, imageID, image.RemoveOptions{
 		Force:         true,
 		PruneChildren: true,
 	})
