@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"harbory-backend/router"
+	"harbory-backend/internal/router"
 )
 
 func main() {
