@@ -9,6 +9,7 @@ import (
 	"harbory-backend/internal/util"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 func init() {
@@ -31,6 +32,15 @@ func SetupRouter() *mux.Router {
 	imageHandler := api.NewImageHandler(imageService)
 	logsHandler := api.NewLogsHandler(containerHandler)
 	systemHandler := api.NewSystemHandler(systemService)
+
+	c := cors.New(cors.Options{
+        AllowedOrigins: []string{"http://localhost:5173"}, // Your frontend URL
+        AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+        AllowedHeaders: []string{"*"},
+        AllowCredentials: true,
+    })
+
+	r.Use(c.Handler)
 
 	r.HandleFunc("/api/containers", containerHandler.GetContainers).Methods("GET")
 	r.HandleFunc("/api/containers/{id}/logs", logsHandler.GetContainerLogs)

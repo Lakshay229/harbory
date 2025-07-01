@@ -2,20 +2,21 @@ import React from 'react'
 import {Settings, User} from 'lucide-react'
 const Navbar = () => {
   return (
-    <div className='w-screen h-13 bg-gray-950 border-b border-white top-0 fixed z-50 flex items-center justify-between px-4 text-white'>
-      <div className='font-bold text-2xl cursor-pointer hover:text-gray-400 transition-colors' onClick={() => window.location.href = '/'}>Harbory
+    <div className='w-screen h-15 bg-gray-950 border-b border-white top-0 z-0 flex items-center justify-between px-4 text-white'>
+      <div className='font-bold text-2xl cursor-pointer hover:text-gray-400 transition-colors tracking-wide' onClick={() => window.location.href = '/'}>
+        Harbory
       </div>
       <div className='flex items-center space-x-6'>
-        <div className='cursor-pointer hover:text-gray-400 transition-colors' onClick={() => window.location.href = '/containers'}>
+        <div className='cursor-pointer hover:text-gray-400 transition-colors font-semibold' onClick={() => window.location.href = '/containers'}>
           Containers
         </div>
-        <div className='cursor-pointer hover:text-gray-400 transition-colors' onClick={() => window.location.href = '/images'}>
+        <div className='cursor-pointer hover:text-gray-400 transition-colors font-semibold' onClick={() => window.location.href = '/images'}>
           Images
         </div>
-        <div className='cursor-pointer hover:text-gray-400 transition-colors' onClick={() => window.location.href = '/volumes'}>
+        <div className='cursor-pointer hover:text-gray-400 transition-colors font-semibold' onClick={() => window.location.href = '/volumes'}>
           Volumes
         </div>
-        <div className='cursor-pointer hover:text-gray-400 transition-colors' onClick={() => window.location.href = '/networks'}>
+        <div className='cursor-pointer hover:text-gray-400 transition-colors font-semibold' onClick={() => window.location.href = '/networks'}>
           Networks
         </div>
         <div className='bg-gray-400 rounded-lg'>
