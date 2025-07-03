@@ -74,6 +74,50 @@ const Container = () => {
     }
   }
 
+  const stopContainer = async (id) => {
+    try {
+      const response = await fetch(`${apiurl}/api/containers/${id}/stop`, {
+        method: 'POST'
+      })
+      if (!response.ok) {
+        throw new Error('Failed to stop container')
+      }
+      fetchContainers()
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  const startContainer = async (id) => {
+    try{
+      const response = await fetch(`${apiurl}/api/containers/${id}/start`,{
+        method: 'POST'
+      })
+      if (!response.ok){
+        throw new Error('Failed to start container')
+      }
+      fetchContainers()
+    }catch(err){
+      setError(err.message)
+    }
+  }
+  const deleteContainer = async (id) => {
+    try{
+      const response = await fetch(`${apiurl}/api/containers/${id}/delete`,{
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      if (!response.ok){
+        throw new Error('Failed to delete container')
+      }
+      fetchContainers()
+    }catch(err){
+      setError(err.message)
+    }
+  }
+
   return (
     <>
       <div className='h-screen w-screen bg-gray-950 overflow-hidden m-0 flex flex-col'>
@@ -156,23 +200,20 @@ const Container = () => {
                           <div className='flex gap-2'>
                             {container.State.toLowerCase() === 'running' ? (
                               <>
-                                <button className='text-yellow-400 hover:text-yellow-300 text-xs px-2 py-1 border border-yellow-400 rounded'>
+                                <button className='text-yellow-400 hover:text-yellow-300 text-xs px-2 py-1 border border-yellow-400 rounded' onClick={() => stopContainer(container.Id)}>
                                   Stop
-                                </button>
-                                <button className='text-orange-400 hover:text-orange-300 text-xs px-2 py-1 border border-orange-400 rounded'>
-                                  Restart
                                 </button>
                               </>
                             ) : (
-                              <button className='text-green-400 hover:text-green-300 text-xs px-2 py-1 border border-green-400 rounded'>
+                              <button className='text-green-400 hover:text-green-300 text-xs px-2 py-1 border border-green-400 rounded' onClick={() => startContainer(container.Id)}>
                                 Start
                               </button>
                             )}
-                            <button className='text-blue-400 hover:text-blue-300 text-xs px-2 py-1 border border-blue-400 rounded'>
+                            <button className='text-blue-400 hover:text-blue-300 text-xs px-2 py-1 border border-blue-400 rounded' onClick={() => window.location.href = `/logs/${container.Id}`}>
                               Logs
                             </button>
-                            <button className='text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded'>
-                              Remove
+                            <button className='text-red-400 hover:text-red-300 text-xs px-2 py-1 border border-red-400 rounded ' onClick={() => deleteContainer(container.Id)}>
+                              Delete
                             </button>
                           </div>
                         </td>
