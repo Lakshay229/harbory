@@ -1,8 +1,53 @@
 import { AppWindow, Cuboid, Image, Inbox, Wifi } from 'lucide-react'
-import React from 'react'
+import { useEffect, useState } from 'react'
 
 const Home = () => {
+  const [systemInfo, setSystemInfo] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const apiurl = import.meta.env.VITE_API_URL
+
+  const fetchSystemInfo = async () => {
+    try{
+      setLoading(true)
+      const response = await fetch(`${apiurl}/api/system/info`,{
+        method: 'GET'
+      })
+      if (!response.ok){
+        throw new Error('Failed to fetch system information')
+      }
+      const data = await response.json()
+      setSystemInfo(data)
+      setError(null)
+    }catch(err){
+      setError(err.message)
+    }finally{
+      setLoading(false)
+    }
+  }
+
+  useEffect(()=>{
+    fetchSystemInfo()
+  },[])
+
+  const calculateUpTime = (startTime) => {
+    
+
+
+    const now = new Date()
+    const start = new Date(startTime)
+    const diff = now - start
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+
+    return `${days} days ${hours} hours ${minutes} minutes`
+  }
+
   return (
+
     <div className='h-screen w-screen bg-gray-900 overflow-hidden m-0 flex'>
       <div className='w-64 bg-gray-800 p-4'>
         <nav className='space-y-2'>
@@ -40,45 +85,50 @@ const Home = () => {
         <div className='mb-8'>
           <h2 className='text-2xl font-semibold text-white mb-6'>System Overview</h2>
           
-          <div className='grid grid-cols-2 gap-8'>
+          {loading ?(
+            <div className='flex justify-center items-center h-64'>
+              <div className='text-white text-lg'>Loading system info...</div>
+            </div>
+          ):
+            (<div className='grid grid-cols-2 gap-8'>
             <div className='space-y-4'>
               <div className='flex justify-between items-center border-b border-gray-700 pb-3'>
                 <span className='text-gray-300'>Docker Version</span>
-                <span className='text-white'>24.0.5</span>
+                <span className='text-white'>{systemInfo.ServerVersion}</span>
               </div>
               <div className='flex justify-between items-center border-b border-gray-700 pb-3'>
                 <span className='text-gray-300'>Images</span>
-                <span className='text-white'>10</span>
+                <span className='text-white'>{systemInfo.Images}</span>
               </div>
               <div className='flex justify-between items-center border-b border-gray-700 pb-3'>
                 <span className='text-gray-300'>Volumes</span>
-                <span className='text-white'>1</span>
+                <span className='text-white'>{systemInfo.Plugins?.Volume.length}</span>
               </div>
               <div className='flex justify-between items-center border-b border-gray-700 pb-3'>
                 <span className='text-gray-300'>Operating System</span>
-                <span className='text-white'>Ubuntu 22.04.3 LTS</span>
+                <span className='text-white'>{systemInfo.OperatingSystem}</span>
               </div>
             </div>
             
             <div className='space-y-4'>
               <div className='flex justify-between items-center border-b border-gray-700 pb-3'>
                 <span className='text-gray-300'>Containers</span>
-                <span className='text-white'>3</span>
+                <span className='text-white'>{systemInfo.Containers}</span>
               </div>
               <div className='flex justify-between items-center border-b border-gray-700 pb-3'>
                 <span className='text-gray-300'>Networks</span>
-                <span className='text-white'>2</span>
+                <span className='text-white'>{systemInfo.Plugins?.Network.length}</span>
               </div>
               <div className='flex justify-between items-center border-b border-gray-700 pb-3'>
                 <span className='text-gray-300'>Uptime</span>
-                <span className='text-white'>2 days 14 hours</span>
+                <span className='text-white'>{calculateUpTime(systemInfo.SystemTime)}</span>
               </div>
               <div className='flex justify-between items-center border-b border-gray-700 pb-3'>
                 <span className='text-gray-300'>Architecture</span>
-                <span className='text-white'>x86_64</span>
+                <span className='text-white'>{systemInfo.Architecture}</span>
               </div>
             </div>
-          </div>
+          </div>)}
         </div>
       </div>
     </div>
