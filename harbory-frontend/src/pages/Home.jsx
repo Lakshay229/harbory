@@ -48,8 +48,8 @@ const Home = () => {
 
   return (
 
-    <div className='h-screen w-screen bg-gray-900 overflow-hidden m-0 flex'>
-      <div className='w-64 bg-gray-800 p-4'>
+    <div className='h-screen w-screen bg-gray-950 overflow-hidden m-0 flex'>
+      <div className='w-64 bg-gray-950 border-r-1 border-white p-4'>
         <nav className='space-y-2'>
           <div className='flex items-center space-x-3 bg-gray-700 p-3 rounded-lg text-white cursor-pointer'>
             {/* <div className='w-5 h-5 bg-blue-500 rounded'></div> */}
