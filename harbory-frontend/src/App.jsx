@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import Container from './pages/Container'
 import Logs from './pages/Logs'
 import ContainerDetails from './pages/ContainerDetails'
+import Images from './pages/images/Images'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="/containers" element={<Container />} />
             <Route path="/containers/:id" element={<ContainerDetails />} />
             <Route path='/logs/:id' element={<Logs/>} />
+            <Route path="/images" element={<Images />} />
           </Routes>
         </main>
     </Router>

@@ -77,50 +77,6 @@ const Container = () => {
     }
   }
 
-  const stopContainer = async (id) => {
-    try {
-      const response = await fetch(`${apiurl}/api/containers/${id}/stop`, {
-        method: 'POST'
-      })
-      if (!response.ok) {
-        throw new Error('Failed to stop container')
-      }
-      fetchContainers()
-    } catch (err) {
-      setError(err.message)
-    }
-  }
-
-  const startContainer = async (id) => {
-    try{
-      const response = await fetch(`${apiurl}/api/containers/${id}/start`,{
-        method: 'POST'
-      })
-      if (!response.ok){
-        throw new Error('Failed to start container')
-      }
-      fetchContainers()
-    }catch(err){
-      setError(err.message)
-    }
-  }
-  const deleteContainer = async (id) => {
-    try{
-      const response = await fetch(`${apiurl}/api/containers/${id}/delete`,{
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      if (!response.ok){
-        throw new Error('Failed to delete container')
-      }
-      fetchContainers()
-    }catch(err){
-      setError(err.message)
-    }
-  }
-
   return (
     <>
       <div className='h-screen w-screen bg-gray-950 overflow-hidden m-0 flex flex-col'>
@@ -172,7 +128,7 @@ const Container = () => {
                   </thead>
                   <tbody>
                     {containers.map((container) => (
-                      <tr key={container.Id} className='bg-gray-800 border-b border-gray-700 hover:bg-gray-750'>
+                      <tr className='bg-gray-800 border-b border-gray-700 hover:bg-gray-750'>
                         <td className='px-6 py-4'>
                           <div className='flex items-center'>
                             <span className={`mr-2 ${getStatusColor(container.State)}`}>
