@@ -14,7 +14,7 @@ const Logs = () => {
     const navigate = useNavigate()
     const containerId = params.id
     
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8081'
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
     // Convert HTTP URL to WebSocket URL
     const wsUrl = apiUrl.replace('http://', 'ws://').replace('https://', 'wss://')
     const logWsUrl = `${wsUrl}/api/containers/${containerId}/logs`
